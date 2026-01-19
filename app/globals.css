@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========== LIGHT THEME (default) ========== */
+:root {
+  color-scheme: dark;
+
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+
+  --background: 0 0% 98%;
+  --foreground: 0 0% 9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+
+  --primary: 165 62% 45%;
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 95 85% 65%;
+  --secondary-foreground: 0 0% 9%;
+
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 45%;
+
+  --accent: 165 62% 45%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 0 0% 85%;
+  --input: 0 0% 85%;
+  --ring: 165 62% 45%;
+
+  --radius: 0.625rem;
+}
+
+/* ========== DARK THEME ========== */
+.dark {
+  color-scheme: dark;
+
+  --background: 0 0% 9%;
+  --foreground: 0 0% 98%;
+
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 0 0% 12%;
+  --popover-foreground: 0 0% 98%;
+
+  --muted: 0 0% 25%;
+  --muted-foreground: 0 0% 65%;
+
+  --destructive: 0 62% 40%;
+}
+
+/* ========== BASE STYLES ========== */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    outline-color: hsl(var(--ring) / 0.5);
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
