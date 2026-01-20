@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Grid, X } from "lucide-react"
 
@@ -71,6 +71,7 @@ export function CampsiteGallery({ images, name }: CampsiteGalleryProps) {
       {/* Full Gallery Modal */}
       <Dialog open={showAll} onOpenChange={setShowAll}>
         <DialogContent className="max-w-7xl h-[90vh] p-0">
+          <DialogTitle className="sr-only">Photo gallery for {name}</DialogTitle>
           <div className="relative h-full">
             <Button
               variant="ghost"

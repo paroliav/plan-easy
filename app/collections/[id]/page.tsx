@@ -152,7 +152,9 @@ export default function CollectionDetailPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {campsites.map((campsite) => (
-                <CampsiteCard key={campsite.id} campsite={campsite} />
+                <Link key={campsite.id} href={`/campsite/${campsite.id}`}>
+                  <CampsiteCard campsite={campsite} />
+                </Link>
               ))}
             </div>
 

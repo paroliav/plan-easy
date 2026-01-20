@@ -1,3 +1,7 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -6,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MapPin, Users, Bookmark, Search } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 const collections = [
   {
@@ -95,6 +100,27 @@ const collections = [
 ]
 
 export default function CollectionsPage() {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState('all')
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
+  const filteredCollections = collections.filter((collection) => {
+    if (activeTab === 'all') return true
+    if (activeTab === 'featured') return collection.featured
+    if (activeTab === 'coastal') return collection.tags.some(tag => tag.toLowerCase().includes('coastal') || tag.toLowerCase().includes('beach'))
+    if (activeTab === 'remote') return collection.tags.some(tag => tag.toLowerCase().includes('off-grid') || tag.toLowerCase().includes('remote'))
+    if (activeTab === 'family') return collection.tags.some(tag => tag.toLowerCase().includes('family'))
+    if (activeTab === 'budget') return collection.tags.some(tag => tag.toLowerCase().includes('free') || tag.toLowerCase().includes('budget'))
+    return true
+  })
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -111,10 +137,15 @@ export default function CollectionsPage() {
               </p>
 
               {/* Search */}
-              <div className="relative">
+              <form onSubmit={handleSearch} className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input placeholder="Search collections..." className="pl-12 h-12 bg-background" />
-              </div>
+                <Input 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search collections or campsites..." 
+                  className="pl-12 h-12 bg-background" 
+                />
+              </form>
             </div>
           </div>
         </section>
@@ -122,7 +153,7 @@ export default function CollectionsPage() {
         {/* Filter Tabs */}
         <section className="border-b border-border bg-card/50 sticky top-20 z-10 backdrop-blur-sm">
           <div className="container mx-auto px-4 py-4">
-            <Tabs defaultValue="all" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="bg-background/50">
                 <TabsTrigger value="all">All Collections</TabsTrigger>
                 <TabsTrigger value="featured">Featured</TabsTrigger>
@@ -144,7 +175,7 @@ export default function CollectionsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {collections
+              {filteredCollections
                 .filter((c) => c.featured)
                 .map((collection) => (
                   <Card key={collection.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
@@ -186,7 +217,9 @@ export default function CollectionsPage() {
                     </CardContent>
 
                     <CardFooter className="p-6 pt-0 flex gap-2">
-                      <Button className="flex-1">View Collection</Button>
+                      <Link href={`/collections/${collection.id}`} className="flex-1">
+                        <Button className="w-full">View Collection</Button>
+                      </Link>
                       <Button variant="outline" size="icon">
                         <Bookmark className="h-4 w-4" />
                       </Button>
@@ -203,38 +236,40 @@ export default function CollectionsPage() {
             <h2 className="text-2xl md:text-3xl font-bold mb-6">All Collections</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {collections.map((collection) => (
-                <Card key={collection.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image
-                      src={collection.image || "/placeholder.svg"}
-                      alt={collection.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    {collection.featured && (
-                      <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">Featured</Badge>
-                    )}
-                  </div>
-
-                  <CardContent className="p-4">
-                    <h3 className="text-lg font-bold mb-1 group-hover:text-primary transition-colors line-clamp-1">
-                      {collection.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{collection.description}</p>
-
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5" />
-                        <span>{collection.sites} sites</span>
-                      </div>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Bookmark className="h-4 w-4" />
-                      </Button>
+              {filteredCollections.map((collection) => (
+                <Link key={collection.id} href={`/collections/${collection.id}`}>
+                  <Card className="overflow-hidden group hover:shadow-lg transition-shadow cursor-pointer">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={collection.image || "/placeholder.svg"}
+                        alt={collection.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      {collection.featured && (
+                        <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">Featured</Badge>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
+
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-bold mb-1 group-hover:text-primary transition-colors line-clamp-1">
+                        {collection.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{collection.description}</p>
+
+                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5" />
+                          <span>{collection.sites} sites</span>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Bookmark className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>

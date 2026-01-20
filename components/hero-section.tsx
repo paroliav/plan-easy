@@ -1,8 +1,26 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MapPin, Calendar, Users } from "lucide-react"
 
 export function HeroSection() {
+  const router = useRouter()
+  const [query, setQuery] = useState('')
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
+    }
+  }
+
+  const handleQuickSearch = (searchTerm: string) => {
+    router.push(`/search?q=${encodeURIComponent(searchTerm)}`)
+  }
+
   return (
     <section className="relative overflow-hidden">
       {/* Background Image */}
@@ -30,47 +48,65 @@ export function HeroSection() {
 
           {/* Quick Search */}
           <div className="mx-auto max-w-3xl">
-            <div className="rounded-xl bg-card border border-border/50 p-2 shadow-2xl backdrop-blur">
-              <div className="grid gap-2 md:grid-cols-[1fr_auto_auto_auto] md:gap-0">
-                <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
-                  <MapPin className="h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Where to?"
-                    className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-                <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
-                  <Calendar className="h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="When?"
-                    className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-                <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
-                  <Users className="h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Who?"
-                    className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-                <div className="px-2 py-2">
-                  <Button size="lg" className="w-full">
-                    Search
-                  </Button>
+            <form onSubmit={handleSearch}>
+              <div className="rounded-xl bg-card border border-border/50 p-2 shadow-2xl backdrop-blur">
+                <div className="grid gap-2 md:grid-cols-[1fr_auto_auto_auto] md:gap-0">
+                  <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
+                    <MapPin className="h-5 w-5 text-muted-foreground" />
+                    <Input
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Where to?"
+                      className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
+                    <Calendar className="h-5 w-5 text-muted-foreground" />
+                    <Input
+                      placeholder="When?"
+                      className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      disabled
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-3 md:border-r border-border">
+                    <Users className="h-5 w-5 text-muted-foreground" />
+                    <Input
+                      placeholder="Who?"
+                      className="border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      disabled
+                    />
+                  </div>
+                  <div className="px-2 py-2">
+                    <Button type="submit" size="lg" className="w-full">
+                      Search
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </form>
             <p className="mt-4 text-sm text-muted-foreground">
               Or try:{" "}
-              <Button variant="link" className="h-auto p-0 text-sm">
+              <Button 
+                variant="link" 
+                className="h-auto p-0 text-sm"
+                onClick={() => handleQuickSearch('Great Ocean Road')}
+              >
                 Great Ocean Road
               </Button>{" "}
               ·
-              <Button variant="link" className="h-auto p-0 text-sm">
+              <Button 
+                variant="link" 
+                className="h-auto p-0 text-sm"
+                onClick={() => handleQuickSearch('Red Centre')}
+              >
                 Red Centre
               </Button>{" "}
               ·
-              <Button variant="link" className="h-auto p-0 text-sm">
+              <Button 
+                variant="link" 
+                className="h-auto p-0 text-sm"
+                onClick={() => handleQuickSearch('East Coast')}
+              >
                 East Coast
               </Button>
             </p>

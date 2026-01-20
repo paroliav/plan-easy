@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Star, MapPin, Heart } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,8 +23,13 @@ interface CampsiteCardProps {
 }
 
 export function CampsiteCard({ campsite }: CampsiteCardProps) {
+  const router = useRouter()
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+    <Card 
+      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      onClick={() => router.push(`/campsite/${campsite.id}`)}
+    >
       <div className="flex flex-col sm:flex-row gap-4 p-4">
         {/* Image */}
         <div className="relative w-full sm:w-48 h-48 sm:h-36 shrink-0 rounded-lg overflow-hidden">
@@ -64,8 +70,8 @@ export function CampsiteCard({ campsite }: CampsiteCardProps) {
 
           {/* Amenities */}
           <div className="flex flex-wrap gap-2 mb-3">
-            {campsite.amenities.slice(0, 4).map((amenity) => (
-              <span key={amenity} className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+            {campsite.amenities.slice(0, 4).map((amenity, index) => (
+              <span key={`${amenity}-${index}`} className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
                 {amenity}
               </span>
             ))}

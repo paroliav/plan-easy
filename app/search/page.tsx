@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SearchBar } from "@/components/search-bar"
 import { FilterBar } from "@/components/filter-bar"
@@ -8,7 +9,9 @@ import { FilterDrawer } from "@/components/filter-drawer"
 import { ResultsList } from "@/components/results-list"
 import { MapView } from "@/components/map-view"
 
-export default function SearchPage() {
+function SearchPageContent() {
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') || ''
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false)
   const [filters, setFilters] = useState({
     stayTypes: [] as string[],
@@ -40,7 +43,7 @@ export default function SearchPage() {
         <div className="flex flex-1 overflow-hidden">
           {/* Results List */}
           <div className="w-full lg:w-1/2 overflow-y-auto">
-            <ResultsList filters={filters} />
+            <ResultsList query={query} filters={filters} />
           </div>
 
           {/* Map View */}
@@ -58,5 +61,20 @@ export default function SearchPage() {
         />
       </div>
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col min-h-screen">
+        <SiteHeader />
+        <div className="flex items-center justify-center flex-1">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
   )
 }
