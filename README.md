@@ -214,7 +214,11 @@ This is a personal project, but suggestions and feedback are welcome. Please ope
 
 ## 📄 License
 
-[Your License Here]
+© 2026 Vivek Parolia.  
+All rights reserved.  
+
+This repository is public for reference only.  
+You **may not copy, distribute, modify, or use** the code in any way without my explicit permission.
 
 ---
 
